@@ -17,6 +17,6 @@ class main extends api
 
   protected function Home()
   {
-
+    return $this('api', 'urlfind', true)->Reserve();
   }
 }
