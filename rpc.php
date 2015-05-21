@@ -8,7 +8,7 @@ include_once('utils/config.php');
 include_once('phpsql/phpsql.php');
 include_once('phpsql/pgsql.php');
 $sql = new phpsql();
-$pg = $sql->Connect("pgsql://postgres@localhost/barebone");
+$pg = $sql->Connect("pgsql://postgres@localhost/motoimperia");
 include_once('phpsql/wrapper.php');
 
 include_once('phpsql/db.php');

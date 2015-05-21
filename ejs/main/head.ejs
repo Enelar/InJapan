@@ -1,0 +1,31 @@
+<div class='to-head'>
+  <require src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.4/semantic.min.js"></require>
+  <style>
+  @import "/css/all.css" screen;
+  @import "//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.4/semantic.min.css";
+  </style>
+
+  <link rel="canonical" href="" />
+  <meta name=viewport content="width=device-width, initial-scale=1">
+</div>
+
+<%
+this.escape().recursive++; // forcing wait for script load
+this.Defer(function()
+{
+  var scripts = [];
+  this.first().find('require').detach().each(function()
+  {
+    scripts.push($(this).attr('src'));
+  });
+  phoxy.Log(4, "Head require", scripts);
+  require(scripts, function() 
+  {
+    phoxy.Log(3, "Head scripts loaded");
+    __context.escape().CheckIsCompleted.call(__context);
+  });
+
+  var element = this.first().detach();
+  $('head').append(element);
+})
+%>
