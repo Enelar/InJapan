@@ -7,9 +7,7 @@ var warmup_obj =
   {
     phoxy._EarlyStage.sync_require[0] = "/phoxy/libs/EJS/ejs.js";
     
-    phoxy._EarlyStage.async_require.push("//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js");
-    //phoxy._EarlyStage.async_require.push("//cdnjs.cloudflare.com/ajax/libs/markdown-it/2.2.1/markdown-it.min.js");
-    //phoxy._EarlyStage.async_require.push("//cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js");
+    phoxy._EarlyStage.sync_require.push("//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js");
     phoxy._EarlyStage.EntryPoint();
   },
   OnBeforeCompile: function()
@@ -20,13 +18,11 @@ var warmup_obj =
   },
   OnAfterCompile: function()
   {
-    //phoxy.Defer(function()
-    //{
-      phoxy.ChangeHash = function(url)
-      {
-        history.pushState({}, document.title, url);
-        return false;
-      }
+    phoxy.ChangeHash = function(url)
+    {
+      history.pushState({}, document.title, url);
+      return false;
+    }
 
     var not_found = phoxy.ApiAnswer;
     phoxy.ApiAnswer = function(data)
@@ -40,17 +36,37 @@ var warmup_obj =
       return not_found.apply(this, arguments);
     }
 
-    //}, 100);
+    // Allow force non-caching requests on form post and any information update
+    var direct_request = phoxy.ApiRequest;
+    phoxy.ApiRequest = function(origin, callback, direct)
+    {
+      if (typeof direct == 'undefined' || direct != true)
+        return direct_request.apply(this, arguments);
+      if (typeof origin == 'string')
+        origin += "?direct";
+      else
+        origin[0] += "?direct";
+
+      return direct_request.call(this, origin, callback);
+    }
+
     phoxy.Log(3, "Phoxy ready. Starting");
   },
   OnBeforeFirstApiCall: function()
   {
     requirejs.config({baseUrl: phoxy.Config()['js_dir']});
+
+    // Enable jquery in EJS context
+    var origin_hook = EJS.Canvas.prototype.hook_first;
+    EJS.Canvas.prototype.hook_first = function()
+    {
+      return $(origin_hook.apply(this, arguments));
+    }
   },
   OnInitialClientCodeComplete: function()
   {
     phoxy.Log(3, "Initial handlers complete");
-    phoxy.MenuCall(location.pathname.substr(1) + location.search, undefined, function()
+    phoxy.MenuCall(location.pathname.substr(1) + location.search, function()
     {
       $('.removeafterload').remove();
       $('body').trigger('initialrender');
