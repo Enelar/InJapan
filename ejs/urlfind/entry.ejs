@@ -1,1 +1,44 @@
-Hello
+<div>
+	<div class='ui fluid input'>
+	  <input placeholder='Ссылка католога' class='catalog'/>
+	</div>
+
+	<div class='ui fluid input'>
+	  <input placeholder='Ссылка обьявления' class='ad'/>
+	</div>
+
+	<button class='ui button'>Найти страницу с обьявлением</button>
+</div>
+<div id='answerplace'>
+</div>
+
+<%
+this.first(function()
+{
+  var catalog = this.find('.catalog');
+  var ad = this.find('.ad');
+
+  catalog.val('https://injapan.ru/category/2084016521/currency-RUR/mode-1/store-private/condition-used/page-1/sort-enddate/order-ascending.html');
+  ad.val('https://injapan.ru/auction/f148268546.html');
+
+  this.find('button').click(function()
+  {
+    __context.first().find('button').prop('disable', true).addClass('loading');
+    phoxy.ApiRequest(['urlfind/QueryUrl', catalog.val(), ad.val()], function(r)
+    {
+      WaitForOperation(r.data.QueryUrl);
+    })
+  })
+})
+
+function WaitForOperation(id)
+{
+  phoxy.ApiRequest(['urlfind/QueryStat', id], function(r)
+  {
+    if (typeof r.data.url == 'undefined')
+      return setTimeout(function() { WaitForOperation(id) }, 1000);
+    __context.first().find('button').prop('disable', false).removeClass('loading');
+    $('#answerplace').html("<a href='" + r.data.url + "'>" + r.data.url + '</a>');
+  })
+}
+%>
