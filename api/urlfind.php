@@ -42,17 +42,17 @@ class urlfind extends api
     return $id->id;
   }
 
-  private function AddParseTask($id)
+  private function AddParseTask($id, $is_category = false)
   {
-    db::Query("INSERT INTO to_parse(id) VALUES ($1)", [$id]);
+    db::Query("INSERT INTO to_parse(id, is_category) VALUES ($1, $2)", [$id, $is_category ? 't' : 'f']);
   }
 
-  public function MeetAndParse($url)
+  public function MeetAndParse($url, $is_category = false)
   {
     if ($id = $this->MeetOnlyUpdate($url))
       return $id;
     $id = $this->MeetOnlyInsert($url);
-    $this->AddParseTask($id);
+    $this->AddParseTask($id, $is_category);
     return $id;
   }
 

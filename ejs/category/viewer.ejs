@@ -1,0 +1,29 @@
+<%
+for (var k in this.parents)
+{
+  var v = this.parents[k];
+%>
+  <a href='/category(<%@ v.category %>)'>
+    <%@ v.name %>
+  </a>
+  >
+<%
+}
+%>
+<hr>
+
+
+<%
+for (var k in this.categories)
+{
+  var v = this.categories[k];
+%>
+  <a href='/category(<%@ v.category %>)'>
+    <%@ v.name %>
+  </a>
+  <br>
+<%
+}
+%>
+
+<%= this.DeferRender(['category/Items', parseInt(this.current.category)]) %>

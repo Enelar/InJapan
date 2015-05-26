@@ -1,0 +1,20 @@
+<div class="ui card">
+  <div class="ui fluid image">
+    <div class="ui black right ribbon label">
+      <%@ this.price %>₽
+    </div>
+    <img src='<%= this.images[0] %>' />
+  </div>
+  <div class="content">
+    <a class="header">Team Fu &amp; Hess</a>
+    <div class="meta">
+      <span class="date"><%@ this.enddate %></span>
+    </div>
+  </div>
+  <div class="extra content">
+    <a>
+      <i class="users icon"></i>
+      <%@ this.name %>
+    </a>
+  </div>
+</div>

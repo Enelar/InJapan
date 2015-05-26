@@ -10,4 +10,15 @@
 </div>
 
 <%
+this.first(function()
+{
+  var input = this.find('input');
+  this.find('button').click(function()
+  {
+    phoxy.ApiRequest(['monitor/BeginTrackCategory', input.val()], function()
+    {
+      input.val('');
+    })
+  })
+})
 %>

@@ -15,7 +15,8 @@ url_click.hook_url_click = function()
   window.onpopstate = function()
   {
     url_click.on_pop_state.apply(this, arguments);
-    analytics.page();
+    if (typeof analytics != 'undefined')
+      analytics.page();
   }
 }
 

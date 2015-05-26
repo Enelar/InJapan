@@ -1,0 +1,12 @@
+<div class="ui five column grid" style='padding-left: 10px'>
+<%
+for (var k in this.items)
+{
+  var v = this.items[k];
+%>
+  <div class="column">
+    <%= this.DeferRender('category/item', v) %>    
+  </div>
+<%
+}
+%>

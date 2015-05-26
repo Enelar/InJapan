@@ -7,7 +7,7 @@ class urlparse extends api
     $res = db::Query("
       WITH helper AS
       (
-        SELECT * FROM to_parse WHERE \"lock\" IS NULL OR now() - \"lock\" > '10 min'::INTERVAL LIMIT 1
+        SELECT * FROM to_parse WHERE is_category = true AND \"lock\" IS NULL OR now() - \"lock\" > '10 min'::INTERVAL LIMIT 1
       ) UPDATE to_parse as a SET lock=now() WHERE id=(SELECT id FROM helper)
         RETURNING (SELECT url FROM urls as b WHERE a.id=b.id)
       ", [], true);
@@ -36,9 +36,9 @@ class urlparse extends api
     foreach ($stripped as list($parse, $url))
     {
       if ($parse)
-        $id = $module->MeetAndParse($url);
+        $id = $module->MeetAndParse($url, true);
       else
-        $id = $module->MeetUrl($url);
+        $id = $module->MeetAndParse($url);
       $module->AddRelation($row->id, $id);
 
       $ret[$id] = $url;
@@ -86,7 +86,7 @@ class urlparse extends api
     return true;
   }
 
-  private function GetCategoryId($url)
+  public function GetCategoryId($url)
   {
     $array = $this->PregMatch($url, '.*category.(\d+)');
     return (int)$array[0];
