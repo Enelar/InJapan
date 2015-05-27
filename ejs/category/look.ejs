@@ -1,0 +1,40 @@
+<% var obj = this.object; %>
+<div class="ui fullscreen modal">
+  <i class="close icon"></i>
+  <div class="header">
+    <a href='https://injapan.ru/auction/<%@ obj.id %>.html'><%@ obj.name %></a>
+    <%@ obj.price.in_japan %> рублей, осталось <%@ obj.remain %>
+  </div>
+  <div class="content">
+    <div class="ui medium image">
+<%
+console.log(obj);
+for (var k in obj.img)
+{
+%>
+  <img src='/api/image/Compress(<%= phoxy.Serialize([obj.img[k]]) %>)'>
+<%
+}
+%>
+    </div>
+    <div class="description">
+      <%= obj.text.ru %>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="ui black button">
+      Nope
+    </div>
+    <div class="ui positive right labeled icon button">
+      Yep, that's me
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>
+
+<%
+this.first(function()
+{
+  this.modal('show');
+})
+%>

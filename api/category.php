@@ -37,7 +37,9 @@ class category extends api
       SELECT 
           id, name, price, images, enddate
           FROM auctions, parents
-          WHERE auctions.category=parents.category ORDER BY name ASC", [$id]);
+          WHERE auctions.category=parents.category
+          ORDER BY name ASC
+          LIMIT 100", [$id]);
     return
     [
       'design' => 'category/items',
@@ -45,6 +47,18 @@ class category extends api
       [
         'items' => $items,
       ],
+    ];
+  }
+
+  protected function Look($id)
+  {
+    $res = pg_query_params("SELECT * FROM auctions WHERE id=$1", [$id]);
+    $row = pg_fetch_assoc($res);
+
+    return
+    [
+      "design" => 'category/look',
+      "data" => ['object' => json_decode($row['object'])],
     ];
   }
 }

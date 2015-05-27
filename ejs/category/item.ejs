@@ -3,18 +3,41 @@
     <div class="ui black right ribbon label">
       <%@ this.price %>₽
     </div>
-    <img src='<%= this.images[0] %>' />
+    <% if (this.images[0].length) { %>
+<%/*    <img src='/api/image/Compress(< %= phoxy.Serialize([this.images[0]]) % >)' /> */%>
+        <img src='<%= this.images[0]%>' />
+    <% } else { %>
+    <i class='massive ban icon'></i><br>
+    Нет изображения
+    <% } %>
   </div>
   <div class="content">
-    <a class="header">Team Fu &amp; Hess</a>
+    <a class="header" href='/category/Look(<%= phoxy.Serialize([__context.id]) %>)'>
+      <%@ this.name %>
+    </a>
     <div class="meta">
       <span class="date"><%@ this.enddate %></span>
     </div>
   </div>
   <div class="extra content">
     <a>
-      <i class="users icon"></i>
-      <%@ this.name %>
+      <i class="unhide icon"></i>
     </a>
   </div>
+  
 </div>
+
+<%
+this.first(function()
+{
+  var that = this;
+  that.find('a').click(function()
+  {
+    var modal = that.find('.modal');
+    if (modal.size() != 0)
+      return modal.modal('show');
+    that.append(phoxy.DeferRender(['category/Look', __context.id]));
+    return false;
+  })
+})
+%>

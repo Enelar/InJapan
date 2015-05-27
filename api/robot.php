@@ -16,15 +16,8 @@ class robot extends api
   protected function ScanAuctions()
   {
     $monitor = $this('api', 'monitor');
-    for ($i = 0; $i < 20; $i++)
-    {
-      if ($monitor->ScanNext() == 'no tasks')
-      {
-        echo "No tasks";
-        break;
-      }
-      sleep(1);
-    }
+    $monitor->ScanNext(10);
+    echo "good";
   }
 
   protected function DailyRescan()

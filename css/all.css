@@ -1,0 +1,11 @@
+.viewer .wait {
+  height: 40vh;
+}
+
+.viewer .ui.card .image img {
+  max-height: 10vw;
+}
+
+.viewer .ui.card .image i.ban {
+  color: red;
+}

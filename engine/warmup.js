@@ -20,7 +20,7 @@ var warmup_obj =
   {
     phoxy.ChangeHash = function(url)
     {
-      history.pushState({}, document.title, url);
+      history.pushState({}, document.title, '/' + url);
       return false;
     }
 

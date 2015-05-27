@@ -1,3 +1,4 @@
+<div class='viewer'>
 <%
 for (var k in this.parents)
 {
@@ -26,4 +27,17 @@ for (var k in this.categories)
 }
 %>
 
-<%= this.DeferRender(['category/Items', parseInt(this.current.category)]) %>
+  <div class="ui segment wait">
+    <div class="ui inverted active dimmer">
+      <div class="ui large text loader">Загружаем</div>
+    </div>
+  </div>
+  <%= this.DeferRender(['category/Items', parseInt(this.current.category)]) %>
+</div>
+
+<%
+this.DeferCascade(function()
+{
+  __context.first().find('.wait').remove();
+})
+%>

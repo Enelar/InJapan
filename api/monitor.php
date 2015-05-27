@@ -1,5 +1,6 @@
 <?php
 define("PHPANTOMJSDIR", "/phpantomjs");
+include('phpantomjs/phpantomjs.php');
 
 class monitor extends api
 {
@@ -41,7 +42,7 @@ class monitor extends api
     return db::Query("SELECT * FROM urls WHERE url=$1", [$res->url], true);
   }
 
-  protected function ScanNext()
+  protected function GetNextTasks()
   {
     do
     {
@@ -50,14 +51,31 @@ class monitor extends api
         return "no tasks";
     } while (strpos($row->url, "https://injapan.ru/auction/") === false);
 
-    $this->ScanAd($row->url);
-    db::Query("DELETE FROM to_parse WHERE id=$1", [$row->id]);
+    return $row;
+  }
+
+  protected function ScanNext($count = 1)
+  {
+    $tasks = [];
+
+    for ($i = 0; $i < $count; $i++)
+    {
+      $row = $this->GetNextTasks();
+      if ($row == "no tasks")
+        break;
+      $tasks[] = $row;
+    }
+
+    foreach ($tasks as $row)
+    {
+      $this->ScanAd($row->url);
+      db::Query("DELETE FROM to_parse WHERE id=$1", [$row->id]);
+    }
   }
 
   protected function ScanAd($url = 'https://injapan.ru/auction/x403149817.html')
   {
 // $('#content div[align="center"] div')
-    include('phpantomjs/phpantomjs.php');
 
     $script = <<<EOT
 // Not working since some issue at injapan
