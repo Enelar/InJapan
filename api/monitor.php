@@ -63,6 +63,16 @@ class monitor extends api
       $row = $this->GetNextTasks();
       if ($row == "no tasks")
         break;
+      $id = $this->GetAdId($row->url)[0];
+      $search = db::Query("SELECT * FROM auctions WHERE id=$1", [$id], true);
+      if ($search())
+      {
+        var_dump("SKIP {$row->id} {$id}");
+        db::Query("DELETE FROM to_parse WHERE id=$1", [$row->id]);
+        $count++;
+        continue;
+      }
+
       $tasks[] = $row;
     }
 
@@ -71,6 +81,14 @@ class monitor extends api
       $this->ScanAd($row->url);
       db::Query("DELETE FROM to_parse WHERE id=$1", [$row->id]);
     }
+  }
+
+  private function GetAdId($url)
+  {
+    $ret = [];
+    $res = preg_match('/auction.(.+)\.html/', $url, $ret);
+    array_shift($ret);
+    return $ret;
   }
 
   protected function ScanAd($url = 'https://injapan.ru/auction/x403149817.html')
